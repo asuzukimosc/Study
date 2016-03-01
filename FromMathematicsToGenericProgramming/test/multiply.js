@@ -57,3 +57,21 @@ describe('multily2', function() {
         assert.equal(multiply.multiply1(41, 59), 41 * 59);
     });
 });
+
+describe('multiply3', function() {
+    it('3 * 5', function() {
+        assert.equal(multiply.multiply3(3, 5), 3 * 5);
+    });
+    it('41 * 59', function() {
+        assert.equal(multiply.multiply3(41, 59), 41 * 59);
+    });
+});
+
+describe('multiply4', function() {
+    it('3 * 5', function() {
+        assert.equal(multiply.multiply4(3, 5), 3 * 5);
+    });
+    it('41 * 59', function() {
+        assert.equal(multiply.multiply4(41, 59), 41 * 59);
+    });
+});

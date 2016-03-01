@@ -95,3 +95,25 @@ exports.multiply2 = function(n, a) {
     }
     return this.mult_acc4(a, n - 1, a);
 }
+
+exports.multiply3 = function(n, a) {
+    while (!odd(n)) {
+        a = a + a;
+        n = half(n);
+    }
+    if (n === 1) {
+        return a;
+    }
+    return this.mult_acc4(a, n - 1, a);
+}
+
+exports.multiply4 = function(n, a) {
+    while (!odd(n)) {
+        a = a + a;
+        n = half(n);
+    }
+    if (n === 1) {
+        return a;
+    }
+    return this.mult_acc4(a, half(n - 1), a + a);
+}

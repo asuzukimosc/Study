@@ -46,3 +46,29 @@ exports.q2 = function() {
     }
     return 0;
 }
+
+exports.q3 = function() {
+    var number = 100;
+    var card = [];
+    for (var i=1; i<number+1; i++) {
+        card[i] = false;
+    }
+
+    for (var i=2; i<number+1; i++) {
+        for (var n=i; n<number+1; n+=i) {
+            card[n] = !card[n];
+        }
+    }
+
+    var result = '';
+    for (var i=1; i<number+1; i++) {
+        if (card[i] == false) {
+            if (result) {
+                result += ', ' + i;
+            } else {
+                result = i;
+            }
+        }
+    }
+    return result;
+}

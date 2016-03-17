@@ -24,3 +24,9 @@ describe('q2', function(){
         assert.equal(func.q2(), 5931);
     });
 });
+
+describe('q3', function(){
+    it ('answer="1, 4, 9, 16, 25, 36, 49, 64, 81, 100"', function() {
+        assert.equal(func.q3(), "1, 4, 9, 16, 25, 36, 49, 64, 81, 100");
+    });
+});

@@ -17,3 +17,10 @@ describe('q1', function(){
         assert.equal(func.q1(), 585);
     });
 });
+
+describe('q2', function(){
+    this.timeout(5000);
+    it ('answer=5931', function() {
+        assert.equal(func.q2(), 5931);
+    });
+});

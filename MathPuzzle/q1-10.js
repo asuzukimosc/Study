@@ -104,3 +104,31 @@ exports.q5 = function(input, max, kinds) {
         }
     }
 }
+
+exports.q6 = function(max) {
+    var check = function(init_number) {
+        var number = init_number * 3 + 1;
+        while ((number != 1) && (number != init_number)) {
+            if (number % 2 == 1) {
+                // odd
+                number = number * 3 + 1;
+            } else {
+                // even
+                number/=2;
+            }
+        }
+        if (number == init_number) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    var cnt = 0;
+    for (var i=0; i<max; i+=2) {
+        if (check(i)) {
+            cnt++;
+        }
+    }
+    return cnt;
+}

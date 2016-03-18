@@ -45,3 +45,9 @@ describe('q5', function(){
         assert.equal(func.q5(1000, 15, [10, 50, 100, 500]), 20);
     });
 });
+
+describe('q6', function(){
+    it ('answer=34', function() {
+        assert.equal(func.q6(10000), 34);
+    });
+});

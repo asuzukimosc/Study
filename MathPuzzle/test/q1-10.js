@@ -30,3 +30,18 @@ describe('q3', function(){
         assert.equal(func.q3(), "1, 4, 9, 16, 25, 36, 49, 64, 81, 100");
     });
 });
+
+describe('q4', function(){
+    it ('n=20, m=3 => 8', function() {
+        assert.equal(func.q4(20, 3), 8);
+    });
+    it ('n=100, m=5 => 22', function() {
+        assert.equal(func.q4(100, 5), 22);
+    });
+});
+
+describe('q5', function(){
+    it ('input=1000, max=15, kinds=[10, 50, 100, 500] => 20 pattern', function() {
+        assert.equal(func.q5(1000, 15, [10, 50, 100, 500]), 20);
+    });
+});

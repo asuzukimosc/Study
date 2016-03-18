@@ -72,3 +72,35 @@ exports.q3 = function() {
     }
     return result;
 }
+
+exports.q4 = function(n, m) {
+    var stick_length = 1;
+    var count = 0;
+    while (stick_length < n){
+        if (stick_length < m) {
+            stick_length+= stick_length;
+        } else {
+            stick_length+= m;
+        }
+        count++;
+    }
+    return count;
+}
+
+exports.q5 = function(input, max, kinds) {
+    var kind = kinds.pop();
+    if (kinds.length != 0) {
+        var c = 0;
+        var max_number = Math.floor(input / kind);
+        for (var i=0; i<=max_number; i++) {
+            c+=this.q5(input - (i * kind), max - i, kinds.concat());
+        }
+        return c;
+    } else {
+        if (input / kind <= max) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+}

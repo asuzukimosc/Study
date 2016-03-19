@@ -58,3 +58,13 @@ describe('q7', function(){
         assert.equal(func.q7('19641010', '20200724'), answer);
     });
 });
+
+describe('q8', function(){
+    this.timeout(10000);
+    it ('input=3', function() {
+        assert.equal(func.q8(3), 36);
+    });
+    it ('input=12', function() {
+        assert.equal(func.q8(12), 324932);
+    });
+});

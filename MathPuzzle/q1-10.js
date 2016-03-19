@@ -159,3 +159,34 @@ exports.q7 = function(start, end) {
 
     return result;
 }
+
+exports.q8 = function(move) {
+
+    var search = function(field, move, x, y, max) {
+        if (field[x + y * max] == true) {
+            return 0;
+        } else {
+            field[x + y * max] = true;
+            if (move == 0) {
+                return 1;
+            } else {
+                var sum = 0;
+                sum += search(field.concat(), move-1, x+1, y, max);
+                sum += search(field.concat(), move-1, x-1, y, max);
+                sum += search(field.concat(), move-1, x, y+1, max);
+                sum += search(field.concat(), move-1, x, y-1, max);
+                return sum;
+            }
+        }
+    };
+
+    var cell = move * 2 + 1;
+    var field = new Array(cell * cell);
+    for(var i=0; i<field.length; i++) {
+        field[i] = false;
+    }
+    var x = move;
+    var y = move;
+
+    return search(field.concat(), move, x, y, cell);
+}

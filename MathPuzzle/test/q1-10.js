@@ -51,3 +51,10 @@ describe('q6', function(){
         assert.equal(func.q6(10000), 34);
     });
 });
+
+describe('q7', function(){
+    var answer = "19660713,19660905,19770217,19950617,20020505,20130201";
+    it ('start=19641010, end=20200724', function() {
+        assert.equal(func.q7('19641010', '20200724'), answer);
+    });
+});

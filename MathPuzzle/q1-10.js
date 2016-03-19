@@ -132,3 +132,30 @@ exports.q6 = function(max) {
     }
     return cnt;
 }
+
+exports.q7 = function(start, end) {
+    var start_date = new Date(start.substr(4, 2) + '/' + start.substr(6, 2) + '/' + start.substr(0,4));
+    var end_date = new Date(end.substr(4, 2) + '/' + end.substr(6, 2) + '/' + end.substr(0,4));
+    var current_date = start_date;
+    var result = '';
+    while (current_date < end_date) {
+        var y = current_date.getFullYear();
+        var m = current_date.getMonth() + 1;
+        var d = current_date.getDate();
+        m = m <= 9 ? '0' + m : m;
+        d = d <= 9 ? '0' + d : d;
+
+        var original_date = String(y) + m + d;
+        var calculate_date = parseInt(original_date).toString(2);
+        calculate_date = calculate_date.split('').reverse().join('');
+        calculate_date = parseInt(calculate_date,2);
+        
+        if (original_date == calculate_date) {
+            result = result ? result + ',' + original_date : original_date;
+        }
+
+        current_date.setDate(current_date.getDate() + 1);
+    }
+
+    return result;
+}

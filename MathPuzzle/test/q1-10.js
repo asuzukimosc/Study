@@ -68,3 +68,9 @@ describe('q8', function(){
         assert.equal(func.q8(12), 324932);
     });
 });
+
+describe('q9', function(){
+    it ('m=20, w=10', function(){
+        assert.equal(func.q9(20, 10), 2417416);
+    });
+});

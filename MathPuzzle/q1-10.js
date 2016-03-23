@@ -190,3 +190,29 @@ exports.q8 = function(move) {
 
     return search(field.concat(), move, x, y, cell);
 }
+
+exports.q9 = function(man, woman) {
+    man+=1;
+    woman+=1;
+    var ary = new Array(man);
+    for (var i=0; i<man; i++) {
+        ary[i] = new Array(woman);
+        for (var j=0; j<woman; j++) {
+            ary[i][j] = 0;
+        }
+    }
+    ary[0][0] = 1;
+    for (var i=0; i<man; i++) {
+        for (var j=0; j<woman; j++) {
+            if ((i != j) && (man - i != woman - j)) {
+                if (j > 0) {
+                    ary[i][j] += ary[i][j - 1];
+                }
+                if (i > 0) {
+                    ary[i][j] += ary[i - 1][j];
+                }
+            }
+        }
+    }
+    return ary[man - 2][woman - 1] + ary[man - 1][woman - 2];
+}

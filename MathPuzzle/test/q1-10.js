@@ -74,3 +74,9 @@ describe('q9', function(){
         assert.equal(func.q9(20, 10), 2417416);
     });
 });
+
+describe('q10', function(){
+    it ('min=2, max=36', function(){
+        assert.equal(func.q10(2, 36), 9);
+    });
+});

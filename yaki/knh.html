@@ -1,0 +1,114 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Fire!</title>
+    </head>
+    <body onload="init()" bgcolor="black">
+        <canvas id="fire" width="1500" height="400"></canvas>
+    </body>
+</html>
+<script type="text/javascript">
+var canvas;
+var ctx;
+var width = 1500;
+var height = 400;
+var particles = [];
+var max = 50;
+
+var speed=5;
+var size=20;
+
+function Particle(x, y) {
+    this.x=x;
+    this.y=y;
+    this.speed_x=(Math.random()*speed) - (speed / 2); // -2 ~ 2
+    this.speed_y=0-Math.random()*2*speed;   // -0 ~ -8
+    this.life=0;
+}
+
+Particle.prototype.move = function() {
+    this.x+=this.speed_x;
+    this.y+=this.speed_y;
+    this.life++;
+}
+
+Particle.prototype.draw = function() {
+    var r = (260-(this.life*2));
+    var g = ((this.life*2)+50);
+    var b = (this.life*2);
+    var a = (((max-this.life)/max)*0.4);
+    ctx.fillStyle = "rgba("+r+","+g+","+b+","+a+")";
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,(max-this.life)/max*size,0,2*Math.PI);
+    ctx.fill();
+}
+
+Particle.prototype.isDeath = function() {
+    return (this.life >= max) ? true : false;
+}
+
+function init() {
+    canvas=document.getElementById("fire");
+    ctx = canvas.getContext("2d");
+    ctx.globalCompositeOperation="lighter";
+    loop();
+}
+
+function loop() {
+    requestAnimationFrame(loop);
+
+    // K
+    var offset = 100;
+    generateFire(offset, 100);
+    generateFire(offset, 200);
+    generateFire(offset, 300);
+    generateFire(offset+50, 200);
+    generateFire(offset+125, 150);
+    generateFire(offset+200, 100);
+    generateFire(offset+125, 250);
+    generateFire(offset+200, 300);
+
+    // N
+    offset = 500;
+    generateFire(offset, 100);
+    generateFire(offset, 200);
+    generateFire(offset, 300);
+    generateFire(offset+50, 150);
+    generateFire(offset+100, 200);
+    generateFire(offset+150, 250);
+    generateFire(offset+200, 100);
+    generateFire(offset+200, 200);
+    generateFire(offset+200, 300);
+    
+    // H
+    offset = 900;
+    generateFire(offset, 100);
+    generateFire(offset, 200);
+    generateFire(offset, 300);
+    generateFire(offset+50, 200);
+    generateFire(offset+100, 200);
+    generateFire(offset+150, 200);
+    generateFire(offset+200, 100);
+    generateFire(offset+200, 200);
+    generateFire(offset+200, 300);
+
+    ctx.clearRect(0, 0, width, height);
+
+    for (var i=0; i<particles.length; i++) {
+        ctx.beginPath();
+        particles[i].move();
+        particles[i].draw();
+        if (particles[i].isDeath()) {
+            particles.splice(i--, 1);
+        }
+    }
+}
+
+function generateFire(x,y){
+    for (var i=0; i<10; i++) {
+        var p = new Particle(x, y);
+        particles.push(p);
+    }
+}
+
+</script>

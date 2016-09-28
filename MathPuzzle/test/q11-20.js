@@ -8,3 +8,10 @@ describe('q11', function(){
         assert.equal(func.q11(), ans);
     });
 });
+
+describe('q12', function(){
+    var ans='143';
+    it ('answer=143' + ans, function() {
+        assert.equal(func.q12(), ans);
+    });
+});

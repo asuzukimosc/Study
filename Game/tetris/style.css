@@ -1,0 +1,25 @@
+@font-face {
+    font-family: 'PixelMplus';
+    src: url('fonts/PixelMplus10-Regular.ttf') format("truetype");
+}
+
+body {
+    font-family: "PixelMplus", sans-serif;
+}
+
+.left-box {
+    display: inline-block;
+    vertical-align: top;
+    width: 300px;
+}
+
+canvas {
+    display: inline;
+    margin: auto;
+    border: 1px solid black;
+}
+
+.right-box {
+    display: inline-block;
+    width: 300px;
+}

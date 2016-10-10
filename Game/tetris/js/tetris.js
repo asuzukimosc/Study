@@ -18,6 +18,7 @@ var info = {
     shadowOffset: 0,
     x: 0,
     y: 0,
+    shape: 0,
 };
 
 var shapes = [
@@ -49,7 +50,12 @@ var shapes = [
         shape: [ 0, 1, 0, 0,
                  1, 1, 1 ],
         color: 'green',
-    }
+    },
+    {
+        shape: [ 1, 1, 0, 0,
+                 1, 1, ],
+        color: 'gray',
+    },
 ];
 
 function init() {
@@ -65,6 +71,7 @@ function newShape() {
     var id = Math.floor(Math.random() * shapes.length);
     var shape = shapes[id].shape;
     info.current = [];
+    info.shape = id + 1;
     for(var y=0; y<4; y++) {
         info.current[y] = [];
         for (var x=0; x<4; x++) {
@@ -96,7 +103,7 @@ function calcShadow() {
 function tick(step) {
     if (info.mode == MODE.GAME) {
         calcShadow();
-        if (step % 10 == 0) {
+        if (step % 100 == 0) {
         if (valid(0,1)) {
             ++info.y;
         } else {
@@ -214,6 +221,7 @@ function rotate(current) {
             newCurrent[y][x] = current[3-x][y];
         }
     }
+
     return newCurrent;
 }
 

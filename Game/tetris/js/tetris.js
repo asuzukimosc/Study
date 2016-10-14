@@ -23,31 +23,37 @@ var info = {
 
 var shapes = [
     {
-        shape: [ 1, 1, 1, 1 ],
+        shape: [ 0, 0, 0, 0,
+                 1, 1, 1, 1 ],
         color: 'cyan'
     },
     {
-        shape: [ 1, 1, 1, 0,
+        shape: [ 0, 0, 0, 0,
+                 1, 1, 1, 0,
                  1 ],
         color: 'orange'
     },
     {
-        shape: [ 1, 1, 1, 0,
+        shape: [ 0, 0, 0, 0,
+                 1, 1, 1, 0,
                  0, 0, 1 ],
         color: 'blue',
     },
     {
-        shape: [ 1, 1, 0, 0,
+        shape: [ 0, 0, 0, 0,
+                 1, 1, 0, 0,
                  0, 1, 1 ],
         color: 'yellow',
     },
     {
-        shape: [ 0, 1, 1, 0,
+        shape: [ 0, 0, 0, 0,
+                 0, 1, 1, 0,
                  1, 1 ],
         color: 'red',
     },
     {
-        shape: [ 0, 1, 0, 0,
+        shape: [ 0, 0, 0, 0,
+                 0, 1, 0, 0,
                  1, 1, 1 ],
         color: 'green',
     },

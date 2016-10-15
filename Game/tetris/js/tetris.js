@@ -58,8 +58,7 @@ var shapes = [
 	size: 3,
     },
     {
-        shape: [ 0, 0, 0,
-                 0, 1, 0,
+        shape: [ 0, 1, 0,
                  1, 1, 1 ],
         color: 'green',
 	size: 3,

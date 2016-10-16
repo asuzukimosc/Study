@@ -20,7 +20,7 @@ function init() {
         temp[i] = new Array();
         for (var j=0; j<height; j++) {
             temp[i][j] = 0;
-            if ((i == 0) || (j == 0) || (i == width) || (j == height)) {
+            if ((i == 0) || (j == 0) || (i == width-1) || (j == height-1)) {
                 field[i][j] = 0;
             } else {
                 if (Math.floor(Math.random() * 2) == 1) {

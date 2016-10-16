@@ -26,8 +26,8 @@ function render_game() {
     }
 
     // Shadow
-    for (var y=0; y<4; y++) {
-        for (var x=0; x<4; x++) {
+    for (var y=0; y<info.size; y++) {
+        for (var x=0; x<info.size; x++) {
             if (info.current[y][x]) {
                 ctx.fillStyle = shapes[info.current[y][x] -1].color;
                 ctx.fillStyle = "gray";
@@ -37,8 +37,8 @@ function render_game() {
     }
 
     // Current shape
-    for (var y=0; y<4; ++y) {
-        for (var x=0; x<4; ++x) {
+    for (var y=0; y<info.size; ++y) {
+        for (var x=0; x<info.size; ++x) {
             if (info.current[y][x]) {
                 ctx.fillStyle = shapes[info.current[y][x] -1].color;
                 drawBlock(info.x + x, info.y + y);

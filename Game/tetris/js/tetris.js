@@ -19,48 +19,55 @@ var info = {
     x: 0,
     y: 0,
     shape: 0,
+    size: 0,
 };
 
 var shapes = [
     {
         shape: [ 0, 0, 0, 0,
                  1, 1, 1, 1 ],
-        color: 'cyan'
+        color: 'cyan',
+	size: 4,
     },
     {
-        shape: [ 0, 0, 0, 0,
-                 1, 1, 1, 0,
+        shape: [ 0, 0, 0,
+                 1, 1, 1,
                  1 ],
-        color: 'orange'
+        color: 'orange',
+	size: 3,
     },
     {
-        shape: [ 0, 0, 0, 0,
-                 1, 1, 1, 0,
+        shape: [ 0, 0, 0,
+                 1, 1, 1,
                  0, 0, 1 ],
         color: 'blue',
+	size: 3,
     },
     {
-        shape: [ 0, 0, 0, 0,
-                 1, 1, 0, 0,
+        shape: [ 0, 0, 0,
+                 1, 1, 0,
                  0, 1, 1 ],
         color: 'yellow',
+	size: 3,
     },
     {
-        shape: [ 0, 0, 0, 0,
-                 0, 1, 1, 0,
+        shape: [ 0, 0, 0,
+                 0, 1, 1,
                  1, 1 ],
         color: 'red',
+	size: 3,
     },
     {
-        shape: [ 0, 0, 0, 0,
-                 0, 1, 0, 0,
+        shape: [ 0, 1, 0,
                  1, 1, 1 ],
         color: 'green',
+	size: 3,
     },
     {
-        shape: [ 1, 1, 0, 0,
+        shape: [ 1, 1,
                  1, 1, ],
         color: 'gray',
+	size: 2,
     },
 ];
 
@@ -78,10 +85,11 @@ function newShape() {
     var shape = shapes[id].shape;
     info.current = [];
     info.shape = id + 1;
-    for(var y=0; y<4; y++) {
+    info.size = shapes[id].size;
+    for(var y=0; y<info.size; y++) {
         info.current[y] = [];
-        for (var x=0; x<4; x++) {
-            var i = 4 * y + x;
+        for (var x=0; x<info.size; x++) {
+            var i = info.size * y + x;
             if (typeof shape[i] != 'undefined' && shape[i]) {
                 info.current[y][x] = id + 1;
             } else {
@@ -110,18 +118,18 @@ function tick(step) {
     if (info.mode == MODE.GAME) {
         calcShadow();
         if (step % 100 == 0) {
-        if (valid(0,1)) {
-            ++info.y;
-        } else {
-            freeze();
-            clearLines();
-            if (info.mode == MODE.GAMEOVER) {
-                newGame();
-                return false;
+            if (valid(0,1)) {
+                ++info.y;
             } else {
-                newShape();
+                freeze();
+                clearLines();
+                if (info.mode == MODE.GAMEOVER) {
+                    newGame();
+                    return false;
+                } else {
+                    newShape();
+                }
             }
-        }
         }
     }
 }
@@ -132,8 +140,8 @@ function valid(offsetX, offsetY, newCurrent) {
     offsetX = info.x + offsetX;
     offsetY = info.y + offsetY;
     newCurrent = newCurrent || info.current;
-    for (var y=0; y<4; ++y) {
-        for (var x=0; x<4; ++x) {
+    for (var y=0; y<info.size; ++y) {
+        for (var x=0; x<info.size; ++x) {
             if (newCurrent[y][x]) {
                 if (typeof board[y + offsetY] == 'undefined'
                     || typeof board[y + offsetY][x + offsetX] == 'undefined'
@@ -153,8 +161,8 @@ function valid(offsetX, offsetY, newCurrent) {
 }
 
 function freeze() {
-    for (var y=0; y<4; y++) {
-        for (var x=0; x<4; x++) {
+    for (var y=0; y<info.size; y++) {
+        for (var x=0; x<info.size; x++) {
             if (info.current[y][x]) {
                 board[y + info.y][x + info.x] = info.current[y][x];
             }
@@ -221,10 +229,10 @@ function keyPress(key) {
 
 function rotate(current) {
     var newCurrent = [];
-    for (var y=0; y<4; ++y) {
+    for (var y=0; y<info.size; ++y) {
         newCurrent[y] = [];
-        for (var x=0; x<4; ++x) {
-            newCurrent[y][x] = current[3-x][y];
+        for (var x=0; x<info.size; ++x) {
+            newCurrent[y][x] = current[info.size-1-x][y];
         }
     }
 

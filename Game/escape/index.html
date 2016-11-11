@@ -1,0 +1,174 @@
+<html>
+    <head>
+        <title>Three.js app</title>
+        <style>
+                        body { margin: 0; }
+                        canvas { width: 100%; height: 100% }
+                </style>
+        </head>
+        <body>
+        <script src="js/three.js"></script>
+        <!-- <script src="js/OrbitControls.js"></script> -->
+        <script src="js/PointerLockControls.js"></script>
+        <script>
+            var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+            if ( havePointerLock ) {
+                var element = document.body;
+                var pointerlockchange = function ( event ) {
+
+                    if ( document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element ) {
+                        controlsEnabled = true;
+                        controls.enabled = true;
+
+                        //blocker.style.display = 'none';
+
+                    } else {
+                        controls.enabled = false;
+
+                        blocker.style.display = '-webkit-box';
+                        blocker.style.display = '-moz-box';
+                        blocker.style.display = 'box';
+
+                        //instructions.style.display = '';
+
+                    }
+
+                };
+            } else {
+                instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
+            }
+
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 1000 );
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio( window.devicePixelRatio );
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            document.body.appendChild( renderer.domElement );
+
+            controls = new THREE.PointerLockControls( camera );
+            scene.add( controls.getObject() );
+
+            document.addEventListener('keydown', onKeyDown, false);
+            document.addEventListener('keyup', onKeyUp, false);
+            var key = 0;
+            function onKeyDown(event) {
+                switch(event.keyCode) {
+                    case 37:
+                        key |= 0b1000;
+                        break;
+                    case 38:
+                        key |= 0b0100;
+                        break;
+                    case 39:
+                        key |= 0b0010;
+                        break;
+                    case 40:
+                        key |= 0b0001;
+                        break;
+                }
+            }
+
+            function onKeyUp(event) {
+                switch(event.keyCode) {
+                    case 37:
+                        key ^= 0b1000;
+                        break;
+                    case 38:
+                        key ^= 0b0100;
+                        break;
+                    case 39:
+                        key ^= 0b0010;
+                        break;
+                    case 40:
+                        key ^= 0b0001;
+                        break;
+                }
+            }
+
+            // FIRST ROOM
+            var wall1 = new THREE.Mesh(new THREE.BoxBufferGeometry(25, 250, 500), new THREE.MeshNormalMaterial());
+            var wall2 = wall1.clone();
+            var wall3 = wall1.clone();
+            wall1.position.set(-100,125,0);
+            wall2.position.set(100,125,0);
+            wall3.position.set(0,125,-100);
+            wall3.rotation.set(0,Math.PI/2,0);
+            scene.add(wall1, wall2, wall3);
+
+
+            // CONTROLS
+            //controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+            // Floor
+            var loader = new THREE.TextureLoader();
+            loader.crossOrigin = '*';
+            loader.load(
+                'images/checkerboard.jpg',
+                function ( texture ) {
+                    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                    texture.repeat.set( 10, 10);
+                    var floorMaterial = new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide } );
+                    var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
+                    var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+                    floor.position.y = -0.5;
+                    floor.rotation.x = Math.PI / 2;
+                    scene.add(floor);
+                }, function ( xhr ) {
+                    console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+                }, function ( xhr ) {
+                    console.log( 'An error happened' );
+                }
+            );
+
+            /*
+            camera.position.x = 180;
+            camera.position.y = 250;
+            camera.position.z = 320;
+            */
+            camera.position.x = 0;
+            camera.position.y = 160;
+            camera.position.z = -30;
+            camera.lookAt(new THREE.Vector3(0,160,0));
+
+            var velocity = new THREE.Vector3();
+            var time;
+            var prev_time = performance.now();
+            var render = function () {
+                requestAnimationFrame( render );
+
+                var time = performance.now();
+                var delta = (time - prev_time) / 1000;  // Basically, 0.015~0.016 point
+                velocity.x -= velocity.x * 10.0 * delta;
+                velocity.z -= velocity.z * 10.0 * delta;
+
+                // PLAYER
+                if (key & 0b1000) {
+                   velocity.x += 400 * delta; 
+                }
+                if (key & 0b0010) {
+                    velocity.x -= 400 * delta;
+                }
+                if (key & 0b0100) {
+                   velocity.z += 400 * delta; 
+                }
+
+                controls.getObject().translateX( velocity.x * delta);
+                controls.getObject().translateY( velocity.y * delta);
+                controls.getObject().translateZ( velocity.z * delta);
+
+                // debug
+                var cx = Math.floor(camera.position.x);
+                var cy = Math.floor(camera.position.y);
+                var cz = Math.floor(camera.position.z);
+                //console.log('camera(x:'+cx+' y:'+cy+' z:'+cz+')');
+                console.log(key);
+                renderer.render(scene, camera);
+
+                prev_time = time;
+            };
+
+            render();
+        </script>
+    </body>
+</html>

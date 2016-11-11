@@ -1,16 +1,58 @@
 <html>
     <head>
         <title>Three.js app</title>
-        <style>
-                        body { margin: 0; }
-                        canvas { width: 100%; height: 100% }
-                </style>
+            <style>
+                body { margin: 0; }
+                canvas { width: 100%; height: 100% }
+                #blocker {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    background-color:rgba(0,0,0,0.5);
+                }
+                #start {
+                    width: 100%;
+                    height: 100%;
+
+                    display: -webkit-box;
+                    display: -moz-box;
+                    display: box;
+
+                    -webkit-box-orient: horizontal;
+                    -moz-box-orient: horizontal;
+                    box-orient: horizontal;
+
+                    -webkit-box-pack: center;
+                    -moz-box-pack: center;
+                    box-pack: center;
+
+                    -webkit-box-align: center;
+                    -moz-box-align: center;
+                    box-align: center;
+
+                    color: #ffffff;
+                    text-align: center;
+
+                    cursor: pointer; 
+                }
+            </style>
         </head>
         <body>
         <script src="js/three.js"></script>
         <!-- <script src="js/OrbitControls.js"></script> -->
         <script src="js/PointerLockControls.js"></script>
+        
+        <div id="blocker">
+            <div id="start">
+                <span style="font size:40px;">Click to play</span>
+                <br />
+
+            </div>
+        </div>
+
         <script>
+            var blocker = document.getElementById( 'blocker' );
+            var start = document.getElementById( 'start' );
             var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
             if ( havePointerLock ) {
                 var element = document.body;
@@ -20,7 +62,7 @@
                         controlsEnabled = true;
                         controls.enabled = true;
 
-                        //blocker.style.display = 'none';
+                        blocker.style.display = 'none';
 
                     } else {
                         controls.enabled = false;
@@ -29,13 +71,32 @@
                         blocker.style.display = '-moz-box';
                         blocker.style.display = 'box';
 
-                        //instructions.style.display = '';
+                        start.style.display = '';
 
                     }
 
                 };
+
+                var pointerlockerror = function ( event ) {
+                    start.style.display = '';
+                };
+
+                document.addEventListener( 'pointerlockchange', pointerlockchange, false );
+                document.addEventListener( 'mozpointerlockchange', pointerlockchange, false );
+                document.addEventListener( 'webkitpointerlockchange', pointerlockchange, false );
+
+                document.addEventListener( 'pointerlockerror', pointerlockerror, false );
+                document.addEventListener( 'mozpointerlockerror', pointerlockerror, false );
+                document.addEventListener( 'webkitpointerlockerror', pointerlockerror, false );
+
+                start.addEventListener( 'click', function ( event ) {
+                    start.style.display = 'none';
+                    element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+                    element.requestPointerLock();
+                }, false);
+
             } else {
-                instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
+                start.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
             }
 
             var scene = new THREE.Scene();

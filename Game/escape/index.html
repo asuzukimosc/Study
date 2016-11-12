@@ -116,15 +116,19 @@
             function onKeyDown(event) {
                 switch(event.keyCode) {
                     case 37:
+                    case 65:
                         key |= 0b1000;
                         break;
                     case 38:
+                    case 87:
                         key |= 0b0100;
                         break;
                     case 39:
+                    case 68:
                         key |= 0b0010;
                         break;
                     case 40:
+                    case 83:
                         key |= 0b0001;
                         break;
                 }
@@ -133,15 +137,19 @@
             function onKeyUp(event) {
                 switch(event.keyCode) {
                     case 37:
+                    case 65:
                         key ^= 0b1000;
                         break;
                     case 38:
+                    case 87:
                         key ^= 0b0100;
                         break;
                     case 39:
+                    case 68:
                         key ^= 0b0010;
                         break;
                     case 40:
+                    case 83:
                         key ^= 0b0001;
                         break;
                 }

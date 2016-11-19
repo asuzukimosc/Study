@@ -35,13 +35,20 @@
 
                     cursor: pointer; 
                 }
+                #debug {
+                    position: absolute;
+                    width: 100%;
+                    color: #FFFFFF;
+                }
             </style>
         </head>
         <body>
         <script src="js/three.js"></script>
         <!-- <script src="js/OrbitControls.js"></script> -->
         <script src="js/PointerLockControls.js"></script>
-        
+       
+        <div id="debug">
+        </div>
         <div id="blocker">
             <div id="start">
                 <span style="font size:40px;">Click to play</span>
@@ -53,6 +60,7 @@
         <script>
             var blocker = document.getElementById( 'blocker' );
             var start = document.getElementById( 'start' );
+            var debug = document.getElementById( 'debug' );
             var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
             if ( havePointerLock ) {
                 var element = document.body;
@@ -156,18 +164,23 @@
             }
 
             // FIRST ROOM
+            var objects = [];
             var wall1 = new THREE.Mesh(new THREE.BoxBufferGeometry(25, 250, 500), new THREE.MeshNormalMaterial());
             var wall2 = wall1.clone();
             var wall3 = wall1.clone();
-            wall1.position.set(-100,125,0);
-            wall2.position.set(100,125,0);
-            wall3.position.set(0,125,-100);
+            var wall4 = wall1.clone();
+            wall1.position.set(-400,125,0);
+            wall2.position.set(400,125,0);
+            wall3.position.set(0,125,-400);
             wall3.rotation.set(0,Math.PI/2,0);
-            scene.add(wall1, wall2, wall3);
-
-
-            // CONTROLS
-            //controls = new THREE.OrbitControls( camera, renderer.domElement );
+            wall4.position.set(0,125,400);
+            wall4.rotation.set(0,Math.PI/2,0);
+            scene.add(wall1, wall2, wall3, wall4);
+            objects.push(wall1);
+            objects.push(wall2);
+            objects.push(wall3);
+            objects.push(wall4);
+            
 
             // Floor
             var loader = new THREE.TextureLoader();
@@ -190,15 +203,58 @@
                 }
             );
 
-            /*
-            camera.position.x = 180;
-            camera.position.y = 250;
-            camera.position.z = 320;
-            */
-            camera.position.x = 0;
-            camera.position.y = 160;
-            camera.position.z = -30;
-            camera.lookAt(new THREE.Vector3(0,160,0));
+            controls.getObject().position.x = 0;
+            controls.getObject().position.y = 160;
+            controls.getObject().position.z = -30;
+
+            var detectCollision = function () {
+                var margin = 100;
+                var hit = {
+                    'left' : false,
+                    'front' : false,
+                    'right' : false,
+                    'back' : false
+                }
+
+                var camera_position = controls.getObject().position;
+                var camera_direction = controls.getDirection(new THREE.Vector3(0, 0, 0)).clone();
+                var ray;
+                var objs;
+
+                ray = new THREE.Raycaster(camera_position, camera_direction);
+                objs = ray.intersectObjects( objects, true );
+                if ((objs.length > 0) && (objs[0].distance <= margin)) {
+                    hit.front = true;
+                }
+
+                // left
+                var quat = new THREE.Quaternion();
+                quat.setFromAxisAngle(new THREE.Vector3(0, 1, 0).normalize(), Math.PI/2);
+                camera_direction.applyQuaternion(quat);
+                ray = new THREE.Raycaster(camera_position, camera_direction);
+                objs = ray.intersectObjects( objects, true );
+                if ((objs.length > 0) && (objs[0].distance <= margin)) {
+                    hit.left = true;
+                }
+
+                // back
+                camera_direction.applyQuaternion(quat);
+                ray = new THREE.Raycaster(camera_position, camera_direction);
+                objs = ray.intersectObjects( objects, true );
+                if ((objs.length > 0) && (objs[0].distance <= margin)) {
+                    hit.back = true;
+                }
+
+                // right
+                camera_direction.applyQuaternion(quat);
+                ray = new THREE.Raycaster(camera_position, camera_direction);
+                objs = ray.intersectObjects( objects, true );
+                if ((objs.length > 0) && (objs[0].distance <= margin)) {
+                    hit.right = true;
+                }
+                
+                return hit;
+            };
 
             var velocity = new THREE.Vector3();
             var time;
@@ -211,30 +267,44 @@
                 velocity.x -= velocity.x * 10.0 * delta;
                 velocity.z -= velocity.z * 10.0 * delta;
 
-                // PLAYER
-                if (key & 0b1000) {
-                   velocity.x += 4000 * delta; 
-                }
-                if (key & 0b0010) {
-                    velocity.x -= 4000 * delta;
-                }
-                if (key & 0b0100) {
-                   velocity.z += 4000 * delta; 
-                }
-                if (key & 0b0001) {
-                    velocity.z -= 4000 * delta;
-                }
-
                 controls.getObject().translateX( velocity.x * delta);
                 controls.getObject().translateY( velocity.y * delta);
                 controls.getObject().translateZ( velocity.z * delta);
 
+                velocity.z -= (key & 0b0100) ? 4000 * delta : 0;
+                velocity.z += (key & 0b0001) ? 4000 * delta : 0;
+                velocity.x -= (key & 0b1000) ? 4000 * delta : 0;
+                velocity.x += (key & 0b0010) ? 4000 * delta : 0;
+                
+                var hit = detectCollision();
+                if ((hit.front) && (velocity.z < 0)) {
+                    velocity.z = 0;
+                }
+                if ((hit.back) && (velocity.z > 0)){
+                    velocity.z = 0;
+                }
+                if ((hit.left) && (velocity.x < 0)) {
+                    velocity.x = 0;
+                }
+                if ((hit.right) && (velocity.x > 0)){
+                    velocity.x = 0;
+                }
+
                 // debug
-                var cx = Math.floor(camera.position.x);
-                var cy = Math.floor(camera.position.y);
-                var cz = Math.floor(camera.position.z);
-                //console.log('camera(x:'+cx+' y:'+cy+' z:'+cz+')');
-                console.log(key);
+                var camera_position = controls.getObject().position;
+                var camera_direction = controls.getDirection(new THREE.Vector3(0, 0, 0)).clone();
+
+                var cx = Math.floor(camera_position.x);
+                var cy = Math.floor(camera_position.y);
+                var cz = Math.floor(camera_position.z);
+                var dx = camera_direction.x;
+                var dy = camera_direction.y;
+                var dz = camera_direction.z;
+                var debug_msg = '';
+                debug_msg += 'camera(x:'+cx+' y:'+cy+' z:'+cz+')<br />';
+                debug_msg += 'direction(x:'+dx+' y:'+dy+' z:'+dz+')';
+                debug.innerHTML = debug_msg;
+                //console.log(key);
                 renderer.render(scene, camera);
 
                 prev_time = time;

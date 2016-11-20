@@ -180,18 +180,34 @@
                     wall1.castShadow = true;
                     var wall2 = wall1.clone();
                     var wall3 = wall1.clone();
-                    var wall4 = wall1.clone();
                     wall1.position.set(-400,125,0);
                     wall2.position.set(400,125,0);
-                    wall3.position.set(0,125,-400);
+                    //wall3.position.set(0,125,-400);
+                    //wall3.rotation.set(0,Math.PI/2,0);
+                    wall3.position.set(0,125,400);
                     wall3.rotation.set(0,Math.PI/2,0);
-                    wall4.position.set(0,125,400);
-                    wall4.rotation.set(0,Math.PI/2,0);
-                    scene.add(wall1, wall2, wall3, wall4);
+                    
+                    scene.add(wall1, wall2, wall3);
                     objects.push(wall1);
                     objects.push(wall2);
                     objects.push(wall3);
-                    objects.push(wall4);
+
+                    //texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                    texture.repeat.set(1,1);
+                    wallMaterial = new THREE.MeshLambertMaterial( { map: texture, side: THREE.DoubleSide } );
+                    wallGeometry = new THREE.BoxBufferGeometry(25, 250, 300);
+                    var wallS1 = new THREE.Mesh(wallGeometry, wallMaterial);
+                    //var wallS1 = new THREE.Mesh(new THREE.MeshLambertMaterial( { map: texture, side: THREE.DoubleSide } ), new THREE.BoxBufferGeometry(25, 250, 300));
+                    wallS1.receiveShadow = true;
+                    wallS1.castShadow = true;
+                    var wallS2 = wallS1.clone();
+                    wallS1.position.set(250,125,-400);
+                    wallS1.rotation.set(0,Math.PI/2,0);
+                    wallS2.position.set(-250,125,-400);
+                    wallS2.rotation.set(0,Math.PI/2,0);
+                    scene.add(wallS1, wallS2);
+                    objects.push(wallS1);
+                    objects.push(wallS2);
 
                 }
             );
@@ -200,7 +216,6 @@
             var pillar = new THREE.Mesh(new THREE.BoxBufferGeometry(25, 250, 25), new THREE.MeshLambertMaterial({color: '#0000ff'}));
             pillar.castShadow = true;
             scene.add(pillar);
-            
 
             // Floor
             var loader = new THREE.TextureLoader();

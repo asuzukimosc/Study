@@ -166,23 +166,36 @@
 
             // FIRST ROOM
             var objects = [];
-            var wall1 = new THREE.Mesh(new THREE.BoxBufferGeometry(25, 250, 800), new THREE.MeshLambertMaterial({color: '#00ff00'}));
-            wall1.castShadow = true;
-            var wall2 = wall1.clone();
-            var wall3 = wall1.clone();
-            var wall4 = wall1.clone();
-            wall1.position.set(-400,125,0);
-            wall2.position.set(400,125,0);
-            wall3.position.set(0,125,-400);
-            wall3.rotation.set(0,Math.PI/2,0);
-            wall4.position.set(0,125,400);
-            wall4.rotation.set(0,Math.PI/2,0);
-            scene.add(wall1, wall2, wall3, wall4);
-            objects.push(wall1);
-            objects.push(wall2);
-            objects.push(wall3);
-            objects.push(wall4);
+            var loader = new THREE.TextureLoader();
+            loader.crossOrigin = '*';
+            loader.load(
+                'images/wall1.jpg',
+                function ( texture ) {
+                    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                    texture.repeat.set(3,1);
+                    var wallMaterial = new THREE.MeshLambertMaterial( { map: texture, side: THREE.DoubleSide } );
+                    var wallGeometry = new THREE.BoxBufferGeometry(25, 250, 800);
+                    var wall1 = new THREE.Mesh(wallGeometry, wallMaterial);
+                    wall1.receiveShadow = true;
+                    wall1.castShadow = true;
+                    var wall2 = wall1.clone();
+                    var wall3 = wall1.clone();
+                    var wall4 = wall1.clone();
+                    wall1.position.set(-400,125,0);
+                    wall2.position.set(400,125,0);
+                    wall3.position.set(0,125,-400);
+                    wall3.rotation.set(0,Math.PI/2,0);
+                    wall4.position.set(0,125,400);
+                    wall4.rotation.set(0,Math.PI/2,0);
+                    scene.add(wall1, wall2, wall3, wall4);
+                    objects.push(wall1);
+                    objects.push(wall2);
+                    objects.push(wall3);
+                    objects.push(wall4);
 
+                }
+            );
+            
             // Pillar
             var pillar = new THREE.Mesh(new THREE.BoxBufferGeometry(25, 250, 25), new THREE.MeshLambertMaterial({color: '#0000ff'}));
             pillar.castShadow = true;
@@ -193,10 +206,10 @@
             var loader = new THREE.TextureLoader();
             loader.crossOrigin = '*';
             loader.load(
-                'images/checkerboard.jpg',
+                'images/floor.jpg',
                 function ( texture ) {
                     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-                    texture.repeat.set( 10, 10);
+                    texture.repeat.set( 2, 2);
                     var floorMaterial = new THREE.MeshLambertMaterial( { map: texture, side: THREE.DoubleSide } );
                     var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
                     var floor = new THREE.Mesh(floorGeometry, floorMaterial);

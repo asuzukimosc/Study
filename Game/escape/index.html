@@ -45,6 +45,8 @@
         <body>
         <script src="js/three.js"></script>
         <!-- <script src="js/OrbitControls.js"></script> -->
+        <script src="js/MTLLoader.js"></script>
+        <script src="js/OBJLoader.js"></script>
         <script src="js/PointerLockControls.js"></script>
        
         <div id="debug">
@@ -253,6 +255,25 @@
                     console.log( 'An error happened' );
                 }
             );
+
+            // OBJ
+            var mtl_loader = new THREE.MTLLoader();
+            mtl_loader.setPath('model/enemy/');
+            mtl_loader.load('enemy.mtl', function ( materials ) {
+                materials.preload();
+
+                var obj_loader = new THREE.OBJLoader();
+                    obj_loader.setPath('model/enemy/');
+                    obj_loader.setMaterials(materials);
+                    obj_loader.load('enemy.obj', function ( object ) {
+                        object.position.x = 150;
+                        object.position.y = 0;
+                        object.position.z = -100;
+                        //scene.add( object );
+                        object.scale.set(130,130,130);
+                    }
+                );
+            });
 
             // LIGHT
             var ambient = new THREE.AmbientLight( 0x101010 );

@@ -427,7 +427,8 @@
                 var dz = camera_direction.z;
                 var debug_msg = '';
                 debug_msg += 'camera(x:'+cx+' y:'+cy+' z:'+cz+')<br />';
-                debug_msg += 'direction(x:'+dx+' y:'+dy+' z:'+dz+')';
+                debug_msg += 'direction(x:'+dx+' y:'+dy+' z:'+dz+')<br />';
+                debug_msg += 'WASDで移動';
                 debug.innerHTML = debug_msg;
                 //console.log(key);
                 renderer.render(scene, camera);

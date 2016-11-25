@@ -114,6 +114,10 @@
 
             var renderer = new THREE.WebGLRenderer({antialias: true});
             renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.physicallyCorrectLights = true;
+            renderer.gammaInput = true;
+            renderer.gammaOutput = true;
             renderer.setPixelRatio( window.devicePixelRatio );
             renderer.setSize( window.innerWidth, window.innerHeight );
             document.body.appendChild( renderer.domElement );
@@ -170,17 +174,18 @@
             var objects = [];
             var loader = new THREE.TextureLoader();
             loader.crossOrigin = '*';
+            var rollup;
             loader.load(
                 'images/rollup.jpg',
                 function ( texture ) {
                     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
                     texture.repeat.set(1,1);
                     var wallMaterial = new THREE.MeshLambertMaterial( { map: texture, side: THREE.DoubleSide } );
-                    var wallGeometry = new THREE.BoxBufferGeometry(25, 250, 300);
-                    var rollup = new THREE.Mesh(wallGeometry, wallMaterial);
+                    var wallGeometry = new THREE.BoxBufferGeometry(5, 250, 300);
+                    rollup = new THREE.Mesh(wallGeometry, wallMaterial);
                     rollup.receiveShadow = true;
                     rollup.castShadow = true;
-                    rollup.position.set(0,125,-410);
+                    rollup.position.set(0,125,-400);
                     rollup.rotation.set(0,Math.PI/2,0);
                     scene.add(rollup);
                 }
@@ -206,6 +211,28 @@
                     objects.push(wall1);
                     objects.push(wall2);
                     objects.push(wall3);
+
+                    // Out side
+                    texture.repeat.set(6,1);
+                    wallMaterial = new THREE.MeshLambertMaterial( { map: texture, side: THREE.DoubleSide } );
+                    wallGeometry = new THREE.BoxBufferGeometry(25, 250, 800+800);
+                    var wall11 = new THREE.Mesh(wallGeometry, wallMaterial);
+                    wall11.receiveShadow = true;
+                    wall11.castShadow = true;
+                    var wall12 = wall11.clone();
+                    var wall13 = wall11.clone();
+                    var wall14 = wall11.clone();
+                    wall11.position.set(-800,125,0);
+                    wall12.position.set(800,125,0);
+                    wall13.position.set(0,125,800);
+                    wall13.rotation.set(0,Math.PI/2,0);
+                    wall14.position.set(0,125,-800);
+                    wall14.rotation.set(0,Math.PI/2,0);
+                    scene.add(wall11, wall12, wall13, wall14);
+                    objects.push(wall11);
+                    objects.push(wall12);
+                    objects.push(wall13);
+                    objects.push(wall14);
 
                     texture.repeat.set(1,1);
                     wallMaterial = new THREE.MeshLambertMaterial( { map: texture, side: THREE.DoubleSide } );
@@ -237,18 +264,17 @@
                 'images/floor.jpg',
                 function ( texture ) {
                     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-                    texture.repeat.set( 2, 2);
+                    texture.repeat.set( 20, 20);
                     var floorMaterial = new THREE.MeshLambertMaterial( { map: texture, side: THREE.DoubleSide } );
-                    var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
+                    var floorGeometry = new THREE.PlaneGeometry(10000, 10000, 10, 10);
                     var floor = new THREE.Mesh(floorGeometry, floorMaterial);
                     floor.receiveShadow = true;
-                    floor.position.y = 0;
-                    floor.rotation.x = Math.PI / 2;
-                    scene.add(floor);
-                    var floor2 = new THREE.Mesh(floorGeometry, floorMaterial);
+                    floor.position.y = 2;
+                    floor.rotation.x = Math.PI/2;
+                    var floor2 = floor.clone();
                     floor2.position.y = 250;
                     floor2.rotation.x = Math.PI /2;
-                    scene.add(floor2);
+                    scene.add(floor, floor2);
                 }, function ( xhr ) {
                     console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
                 }, function ( xhr ) {
@@ -276,14 +302,26 @@
             });
 
             // LIGHT
-            var ambient = new THREE.AmbientLight( 0x101010 );
+            var ambient = new THREE.AmbientLight( 0x101010, 0.1 );
             scene.add( ambient );
-            var light = new THREE.SpotLight(0xFFFFFF, 0.3);
-            light.position.set( -205, 200, 200);
-            light.target.position.set(0,0,0);
-            //light.shadowCameraVisible = true;
+            var light = new THREE.PointLight( 0xffee88, 1, 100, 2);
+            var light_material = new THREE.MeshStandardMaterial({
+                emissive: 0xffffee,
+                emissiveIntensity: 1,
+                color: 0x000000
+            });
+            light.add( new THREE.Mesh( new THREE.SphereGeometry(0.02, 16, 8), light_material) );
+            light.position.set(200,200,200);
+            light.power = 20;
+            light.shadows = true;
+            light.exposure = 0.68;
             light.castShadow = true;
+            light.bulbPower = 20;
+            light.hemiIrradiance = 0.0001;
             scene.add(light);
+
+            hemiLight = new THREE.HemisphereLight( 0xddeeff, 0x0f0e0d, 0.02 );
+            scene.add( hemiLight );
 
             controls.getObject().position.x = 0;
             controls.getObject().position.y = 160;
@@ -370,6 +408,11 @@
                 }
                 if ((hit.right) && (velocity.x > 0)){
                     velocity.x = 0;
+                }
+
+                // rollup
+                if ((rollup) && (rollup.position.y <= 350)) {
+                    rollup.position.y += 150 * delta;
                 }
 
                 // debug
